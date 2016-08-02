@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+
+	<bean id="car" class="infrastructure.carSimulation.CarSimulation">
+	</bean>
+
+	<bean id="brake" class="problemDomain.car.Brake">
+		<constructor-arg ref="car" />
+	</bean>
+
+	<bean id="clutch" class="problemDomain.car.Clutch">
+		<constructor-arg ref="car" />
+	</bean>
+
+	<bean id="gearbox" class="problemDomain.car.GearBox">
+		<constructor-arg ref="car" />
+	</bean>
+
+	<bean id="throttle" class="problemDomain.car.Throttle">
+		<constructor-arg ref="car" />
+	</bean>
+
+	<bean id="throttleValve" class="problemDomain.car.ThrottleValve">
+		<constructor-arg ref="car" />
+	</bean>
+	
+	<bean id="speedProvider" class="problemDomain.car.SpeedProvider">
+		<constructor-arg ref="car" />
+	</bean>
+
+	<bean id="rglSpeed" class="problemDomain.interfaces.SpeedRegulator">
+		<constructor-arg ref="throttleValve" />
+	</bean>
+
+	<bean id="ceStruct" class="problemDomain.car.CarElementStructurer">
+		<constructor-arg ref="speedProvider" />
+		<constructor-arg ref="brake" />
+		<constructor-arg ref="throttle" />
+		<constructor-arg ref="clutch" />
+		<constructor-arg ref="gearbox" />
+	</bean>
+
+	<bean id="stateController" class="controlCenter.stateController.StateController">
+		<constructor-arg ref="rglSpeed" />
+		<constructor-arg ref="ceStruct" />
+	</bean>
+	
+	<bean id="cmdFactory" class="controlCenter.serviceItfController.commands.CommandFactory">
+		<constructor-arg ref="stateController" />
+	</bean>
+	
+	<bean id="serviceItfCtrl" class="controlCenter.serviceItfController.ServiceItfController">
+		<constructor-arg ref="cmdFactory" />
+	</bean>
+
+	<bean id="ethItf" class="userInterface.serviceInterfaces.EthernetInterface">
+		<constructor-arg ref="serviceItfCtrl" />
+		<constructor-arg value="4711" />
+	
+</bean>
+	
+</beans>
